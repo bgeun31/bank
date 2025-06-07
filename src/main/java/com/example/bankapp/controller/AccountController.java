@@ -80,12 +80,11 @@ public class AccountController {
         return "redirect:/accounts";
     }
     @GetMapping("/account/detail")
-    public String viewAccountDetail(@RequestParam String accountNumber, Model model) {
-        Account acc = accountService.findByAccountNumber(accountNumber);
-        List<Transaction> txs = accountService.getTransactions(accountNumber);
-
-        model.addAttribute("account", acc);
-        model.addAttribute("transactions", txs);
+    public String accountDetail(@RequestParam String accountNumber, Model model) {
+        Account account = accountService.findByAccountNumber(accountNumber);
+        List<Transaction> transactions = accountService.getTransactions(accountNumber);
+        model.addAttribute("account", account);
+        model.addAttribute("transactions", transactions);
         return "account-detail";
     }
 }

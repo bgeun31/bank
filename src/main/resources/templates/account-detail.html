@@ -1,9 +1,8 @@
-<!-- templates/account-detail.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${account.ownerName} + ' 상세 보기'">계좌 상세</title>
+    <title>계좌 상세</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
@@ -12,59 +11,98 @@
     <div class="w-64 bg-white border-r h-screen p-4">
         <h2 class="text-lg font-bold mb-6">🔒 안전한 은행</h2>
         <ul class="space-y-4 text-sm font-medium">
-            <li><a href="/dashboard">📊 대시보드</a></li>
-            <li><a href="/accounts" class="text-blue-600">💳 계좌</a></li>
-            <li><a href="/transfer">🔁 이체</a></li>
-            <li><a href="/transactions">📉 거래 내역</a></li>
+            <li><a href="/dashboard" class="flex items-center gap-2">📊 대시보드</a></li>
+            <li><a href="/accounts" class="flex items-center gap-2 text-blue-600">💳 계좌</a></li>
+            <li><a href="/transfer" class="flex items-center gap-2">🔁 이체</a></li>
+            <li><a href="/transactions" class="flex items-center gap-2">📉 거래 내역</a></li>
+            <li><a href="/deposit" class="flex items-center gap-2">📤 입금</a></li>
+            <li><a href="/withdraw" class="flex items-center gap-2">📥 출금</a></li>
+            <li><a href="/settings" class="flex items-center gap-2">⚙️ 설정</a></li>
         </ul>
     </div>
 
     <!-- 메인 -->
-    <div class="flex-1 p-6 space-y-6">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-bold" th:text="${account.accountName}">주계좌</h1>
-                <p class="text-sm text-gray-500" th:text="'계좌번호: ' + ${account.accountNumber}">계좌번호</p>
-            </div>
-            <a href="/accounts" class="text-sm text-gray-400">← 뒤로</a>
+    <div class="flex-1 p-8">
+        <div class="mb-6">
+            <a href="/accounts" class="text-sm text-gray-500">← 뒤로</a>
+            <h1 class="text-2xl font-bold mt-2" th:text="${account.accountName}">주계좌</h1>
+            <p class="text-sm text-gray-400" th:text="|계좌번호: ${account.accountNumber}|">123-456-789012</p>
         </div>
 
-        <!-- 계좌 정보 -->
         <div class="grid grid-cols-2 gap-6">
-            <div class="bg-white border p-4 rounded-xl">
-                <h2 class="font-bold mb-2">계좌 정보</h2>
-                <p>계좌 유형: <span th:text="${account.type}">입출금</span></p>
-                <p>현재 잔액: <span th:text="|₩${#numbers.formatDecimal(account.balance, 0, 0)}|">₩0</span></p>
-                <p>개설일: <span th:text="${#temporals.format(account.createdAt, 'yyyy-MM-dd')}">날짜</span></p>
-                <p>상태: <span class="text-green-600">활성</span></p>
+            <!-- 계좌 정보 -->
+            <div class="bg-white rounded-xl border p-6 space-y-2">
+                <h2 class="text-lg font-bold mb-4">계좌 정보</h2>
+                <p class="text-sm text-gray-500">계좌 상세 정보</p>
+                <div class="mt-4">
+                    <div class="text-gray-600">계좌 유형</div>
+                    <div class="font-semibold" th:text="${account.accountType}">입출금 계좌</div>
+                </div>
+                <div class="mt-2">
+                    <div class="text-gray-600">현재 잔액</div>
+                    <div class="text-xl font-bold text-black" th:text="|₩${#numbers.formatDecimal(account.balance, 0, 0)}|">₩1,500,000</div>
+                </div>
+                <div class="mt-2">
+                    <div class="text-gray-600">개설일</div>
+                    <div class="text-sm" th:text="${#temporals.format(account.createdAt, 'yyyy/MM/dd')}">2025/06/07</div>
+                </div>
+                <div class="mt-2">
+                    <div class="text-gray-600">상태</div>
+                    <div class="text-sm inline-block bg-green-100 text-green-800 px-2 py-0.5 rounded" th:text="${account.active ? '활성' : '비활성'}">활성</div>
+                </div>
             </div>
 
-            <!-- 입금/출금 폼 자리 (추후 구현 가능) -->
-            <div class="bg-white border p-4 rounded-xl">
-                <h2 class="font-bold mb-2">계좌 관리</h2>
-                <p class="text-sm text-gray-500">입금 및 출금 관리 예정</p>
+            <!-- 입출금 폼 -->
+            <div class="bg-white rounded-xl border p-6 space-y-4">
+                <h2 class="text-lg font-bold">계좌 관리</h2>
+                <p class="text-sm text-gray-500">입금 및 출금 관리</p>
+                <form th:action="@{/account/deposit}" method="post" class="space-y-4">
+                    <input type="hidden" name="accountNumber" th:value="${account.accountNumber}" />
+                    <div class="flex border rounded overflow-hidden">
+                        <button type="submit" formaction="/account/deposit" class="w-1/2 bg-black text-white py-2">입금</button>
+                        <button type="submit" formaction="/account/withdraw" class="w-1/2 bg-gray-100 text-black py-2">출금</button>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">입금액</label>
+                        <input type="number" name="amount" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">내용</label>
+                        <textarea name="description" rows="3" class="w-full border rounded px-3 py-2" placeholder="입금 내용을 입력하세요."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-black text-white py-2 rounded">입금하기</button>
+                </form>
             </div>
         </div>
 
         <!-- 거래 내역 -->
-        <div class="bg-white border rounded-xl p-4">
-            <h2 class="font-bold mb-4">거래 내역</h2>
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="border-b">
-                        <th class="text-left py-2">날짜</th>
-                        <th class="text-left">설명</th>
-                        <th class="text-left">유형</th>
-                        <th class="text-left">금액</th>
+        <div class="mt-8">
+            <div class="mb-2 space-x-4">
+                <button class="px-4 py-1 border rounded bg-gray-100">모든 거래</button>
+                <button class="px-4 py-1 border rounded">입금</button>
+                <button class="px-4 py-1 border rounded">출금</button>
+                <button class="px-4 py-1 border rounded">이체</button>
+            </div>
+            <table class="w-full text-sm mt-4">
+                <thead class="text-left text-gray-500 border-b">
+                    <tr>
+                        <th class="py-2">날짜</th>
+                        <th>설명</th>
+                        <th>유형</th>
+                        <th>계좌</th>
+                        <th>금액</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="tx : ${transactions}" class="border-b">
-                        <td th:text="${#temporals.format(tx.date, 'M/d/yyyy')}">6/6/2025</td>
+                        <td class="py-2" th:text="${#temporals.format(tx.date, 'M/d/yyyy')}">6/6/2025</td>
                         <td th:text="${tx.description}">급여 입금</td>
-                        <td th:text="${tx.type}">입금</td>
-                        <td th:text="${tx.amount > 0 ? '+₩' + #numbers.formatDecimal(tx.amount, 0, 0) : '-₩' + #numbers.formatDecimal(-tx.amount, 0, 0)}"
-                            th:classappend="${tx.amount > 0} ? 'text-green-600' : 'text-red-600'">+₩100,000</td>
+                        <td th:text="${tx.type}" class="text-green-600" th:classappend="${tx.type == '출금'} ? 'text-red-500' : 'text-green-600'">입금</td>
+                        <td th:text="${tx.accountNumber}">123-456-789012</td>
+                        <td th:text="${tx.type == '출금'} ? '-₩' + #numbers.formatInteger(tx.amount) : '+₩' + #numbers.formatInteger(tx.amount)"
+                            th:classappend="${tx.type == '출금'} ? 'text-red-500' : 'text-green-600'">
+                            +₩100,000
+                        </td>
                     </tr>
                 </tbody>
             </table>

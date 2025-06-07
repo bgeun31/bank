@@ -16,6 +16,8 @@ public class Account {
     private LocalDateTime createdAt;
     private String type;         // "checking" or "saving"
     private String username; // 사용자 아이디
+    private String accountType;
+    private boolean active;
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -44,5 +46,20 @@ public class Account {
     }
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+    
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
