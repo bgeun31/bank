@@ -11,4 +11,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     // 추가: 사용자 이름으로 계좌 목록 조회
     List<Account> findByOwnerName(String ownerName);
+    List<Account> findByUsername(String username); // 추가
 }
+

@@ -96,3 +96,53 @@ body.dashboard-body {
 
 .positive { color: green; }
 .negative { color: red; }
+
+.container {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.form-box {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-box h2 {
+    margin-bottom: 10px;
+}
+
+.form-box label {
+    font-weight: bold;
+    margin-top: 20px;
+    display: block;
+}
+
+.form-box input, .form-box select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-box .desc {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 12px;
+}
+
+.form-box button {
+    width: 100%;
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.bankapp.entity.Transaction;
+import java.security.Principal;
+
 
 import java.util.List;
 
@@ -19,13 +21,6 @@ public class AccountController {
     @GetMapping("/")
     public String home() {
         return "index";
-    }
-
-    @PostMapping("/create")
-    public String create(@RequestParam String ownerName, Model model) {
-        Account account = accountService.createAccount(ownerName);
-        model.addAttribute("account", account);
-        return "result";
     }
 
     @PostMapping("/deposit")
@@ -58,5 +53,30 @@ public class AccountController {
         model.addAttribute("transactions", transactions);
         model.addAttribute("accountNumber", accountNumber);
         return "transactions";
+    }
+    
+    @GetMapping("/accounts")
+    public String accounts(Model model, Principal principal) {
+        String username = principal.getName();
+        List<Account> accounts = accountService.getAccountsByUsername(username);
+        model.addAttribute("accounts", accounts);
+        return "account"; // account.html 렌더링
+    }
+
+    @GetMapping("/create")
+    public String showCreateForm() {
+        return "create-account"; // 위 템플릿 렌더링
+    }
+
+    @PostMapping("/create")
+    public String handleCreate(
+        @RequestParam String accountName,
+        @RequestParam String accountType,
+        @RequestParam double initialBalance,
+        Principal principal
+    ) {
+        String username = principal.getName();
+        accountService.createAccount(username, accountName, accountType, initialBalance);
+        return "redirect:/accounts";
     }
 }

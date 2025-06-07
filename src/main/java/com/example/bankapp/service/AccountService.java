@@ -20,6 +20,14 @@ public class AccountService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+    
+    private String generateAccountNumber() {
+        return String.format("%03d-%03d-%03d",
+                (int)(Math.random() * 1000),
+                (int)(Math.random() * 1000),
+                (int)(Math.random() * 1000)
+        );
+    }
 
     public Account createAccount(String ownerName) {
         Account acc = new Account();
@@ -95,5 +103,20 @@ public class AccountService {
     
     public List<Account> getAccounts(String ownerName) {
         return accountRepository.findByOwnerName(ownerName);
+    }
+    
+    public List<Account> getAccountsByUsername(String username) {
+        return accountRepository.findByUsername(username); // ✅ 정확한 필드
+    }
+    
+    public Account createAccount(String username, String name, String type, double amount) {
+        Account acc = new Account();
+        acc.setUsername(username);
+        acc.setOwnerName(name);
+        acc.setType(type); // 필드 필요
+        acc.setAccountNumber(generateAccountNumber());
+        acc.setBalance(amount);
+
+        return accountRepository.save(acc);
     }
 }
