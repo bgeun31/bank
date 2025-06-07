@@ -119,4 +119,8 @@ public class AccountService {
 
         return accountRepository.save(acc);
     }
+    public Account findByAccountNumber(String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
+    }
 }

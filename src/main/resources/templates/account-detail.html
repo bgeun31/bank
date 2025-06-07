@@ -1,0 +1,75 @@
+<!-- templates/account-detail.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${account.ownerName} + ' 상세 보기'">계좌 상세</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+<div class="flex">
+    <!-- 사이드바 -->
+    <div class="w-64 bg-white border-r h-screen p-4">
+        <h2 class="text-lg font-bold mb-6">🔒 안전한 은행</h2>
+        <ul class="space-y-4 text-sm font-medium">
+            <li><a href="/dashboard">📊 대시보드</a></li>
+            <li><a href="/accounts" class="text-blue-600">💳 계좌</a></li>
+            <li><a href="/transfer">🔁 이체</a></li>
+            <li><a href="/transactions">📉 거래 내역</a></li>
+        </ul>
+    </div>
+
+    <!-- 메인 -->
+    <div class="flex-1 p-6 space-y-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold" th:text="${account.accountName}">주계좌</h1>
+                <p class="text-sm text-gray-500" th:text="'계좌번호: ' + ${account.accountNumber}">계좌번호</p>
+            </div>
+            <a href="/accounts" class="text-sm text-gray-400">← 뒤로</a>
+        </div>
+
+        <!-- 계좌 정보 -->
+        <div class="grid grid-cols-2 gap-6">
+            <div class="bg-white border p-4 rounded-xl">
+                <h2 class="font-bold mb-2">계좌 정보</h2>
+                <p>계좌 유형: <span th:text="${account.type}">입출금</span></p>
+                <p>현재 잔액: <span th:text="|₩${#numbers.formatDecimal(account.balance, 0, 0)}|">₩0</span></p>
+                <p>개설일: <span th:text="${#temporals.format(account.createdAt, 'yyyy-MM-dd')}">날짜</span></p>
+                <p>상태: <span class="text-green-600">활성</span></p>
+            </div>
+
+            <!-- 입금/출금 폼 자리 (추후 구현 가능) -->
+            <div class="bg-white border p-4 rounded-xl">
+                <h2 class="font-bold mb-2">계좌 관리</h2>
+                <p class="text-sm text-gray-500">입금 및 출금 관리 예정</p>
+            </div>
+        </div>
+
+        <!-- 거래 내역 -->
+        <div class="bg-white border rounded-xl p-4">
+            <h2 class="font-bold mb-4">거래 내역</h2>
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b">
+                        <th class="text-left py-2">날짜</th>
+                        <th class="text-left">설명</th>
+                        <th class="text-left">유형</th>
+                        <th class="text-left">금액</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="tx : ${transactions}" class="border-b">
+                        <td th:text="${#temporals.format(tx.date, 'M/d/yyyy')}">6/6/2025</td>
+                        <td th:text="${tx.description}">급여 입금</td>
+                        <td th:text="${tx.type}">입금</td>
+                        <td th:text="${tx.amount > 0 ? '+₩' + #numbers.formatDecimal(tx.amount, 0, 0) : '-₩' + #numbers.formatDecimal(-tx.amount, 0, 0)}"
+                            th:classappend="${tx.amount > 0} ? 'text-green-600' : 'text-red-600'">+₩100,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

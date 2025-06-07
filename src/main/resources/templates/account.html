@@ -43,7 +43,10 @@
 	        <div class="text-sm text-gray-400">
 	            개설일: <span th:text="${#temporals.format(acc.createdAt, 'yyyy/MM/dd')}">날짜</span>
 	        </div>
-	        <a href="/account/detail" class="block text-center mt-4 border rounded py-1">상세 보기</a>
+	        <a th:href="@{'/account/detail'(accountNumber=${acc.accountNumber})}" 
+			   class="block text-center mt-4 border rounded py-1">
+			   상세 보기
+			</a>
 	    </div>
 	</div>
 

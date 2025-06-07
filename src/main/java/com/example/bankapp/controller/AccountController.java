@@ -79,4 +79,13 @@ public class AccountController {
         accountService.createAccount(username, accountName, accountType, initialBalance);
         return "redirect:/accounts";
     }
+    @GetMapping("/account/detail")
+    public String viewAccountDetail(@RequestParam String accountNumber, Model model) {
+        Account acc = accountService.findByAccountNumber(accountNumber);
+        List<Transaction> txs = accountService.getTransactions(accountNumber);
+
+        model.addAttribute("account", acc);
+        model.addAttribute("transactions", txs);
+        return "account-detail";
+    }
 }
