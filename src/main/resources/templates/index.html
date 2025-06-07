@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Bank App</title></head>
+<body>
+    <!-- 네비게이션 추가 -->
+    <div>
+        <a th:href="@{/}">홈</a> |
+        <a th:href="@{/register}">회원가입</a> |
+        <a th:href="@{/login}">로그인</a> |
+        <a th:href="@{/logout}">로그아웃</a>
+    </div>
+
+    <h1>계좌 생성</h1>
+    <form action="/create" method="post">
+        <input type="text" name="ownerName" placeholder="이름 입력" required />
+        <button type="submit">생성</button>
+    </form>
+
+    <h2>입금</h2>
+    <form action="/deposit" method="post">
+        <input type="text" name="accountNumber" placeholder="계좌번호" required />
+        <input type="number" name="amount" placeholder="금액" required />
+        <button type="submit">입금</button>
+    </form>
+
+    <h2>출금</h2>
+    <form action="/withdraw" method="post">
+        <input type="text" name="accountNumber" placeholder="계좌번호" required />
+        <input type="number" name="amount" placeholder="금액" required />
+        <button type="submit">출금</button>
+    </form>
+
+    <h2>이체</h2>
+    <form action="/transfer" method="post">
+        <input type="text" name="fromAccountNumber" placeholder="출금 계좌번호" required />
+        <input type="text" name="toAccountNumber" placeholder="입금 계좌번호" required />
+        <input type="number" name="amount" placeholder="금액" required />
+        <button type="submit">이체</button>
+    </form>
+
+    <h2>거래 내역 조회</h2>
+    <form action="/transactions" method="get">
+        <input type="text" name="accountNumber" placeholder="계좌번호 입력">
+        <button type="submit">조회</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>결과</title></head>
+<body>
+    <h2>결과</h2>
+    <p th:text="'계좌주: ' + ${account.ownerName}"></p>
+    <p th:text="'계좌번호: ' + ${account.accountNumber}"></p>
+    <p th:text="'잔액: ' + ${account.balance} + ' 원'"></p>
+    <a href="/">돌아가기</a>
+</body>
+</html>

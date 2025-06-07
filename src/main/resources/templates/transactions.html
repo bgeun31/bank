@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>거래 내역</title></head>
+<body>
+    <h1>계좌번호 [[${accountNumber}]]의 거래 내역</h1>
+
+    <table border="1">
+        <tr>
+            <th>날짜</th>
+            <th>유형</th>
+            <th>금액</th>
+            <th>설명</th>
+        </tr>
+        <tr th:each="tx : ${transactions}">
+            <td th:text="${tx.date}">2025-01-01</td>
+            <td th:text="${tx.type}">DEPOSIT</td>
+            <td th:text="${tx.amount}">10000</td>
+            <td th:text="${tx.description}">입금 처리</td>
+        </tr>
+    </table>
+
+    <a href="/">← 돌아가기</a>
+</body>
+</html>
