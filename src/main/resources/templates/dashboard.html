@@ -1,0 +1,81 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>대시보드</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="dashboard-body">
+
+    <aside class="sidebar">
+        <h1>🔒 안전한 은행</h1>
+        <ul class="nav-links">
+            <li><a href="/dashboard">📊 대시보드</a></li>
+            <li><a href="/accounts">💳 계좌</a></li>
+            <li><a href="/transfer">🔁 이체</a></li>
+            <li><a href="/transactions">📈 거래 내역</a></li>
+            <li><a href="/deposit">⬆️ 입금</a></li>
+            <li><a href="/withdraw">⬇️ 출금</a></li>
+            <li><a href="/settings">⚙️ 설정</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div>
+                <strong th:text="${username} + '님 환영합니다'">사용자</strong>
+            </div>
+            <div><a href="/logout" class="logout-button">로그아웃</a></div>
+        </header>
+
+        <section class="dashboard-summary">
+            <h2>대시보드</h2>
+            <div class="summary-cards">
+                <div class="card">
+                    <p>총 자산</p>
+                    <h3 th:text="|₩${totalBalance}|">₩0</h3>
+                </div>
+                <div class="card">
+                    <p>계좌 수</p>
+                    <h3 th:text="${accountCount}">0</h3>
+                </div>
+                <div class="card">
+                    <p>최근 거래</p>
+                    <h3 th:text="${recentCount}">0</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="accounts-section">
+            <h3>내 계좌</h3>
+            <div class="account-cards" th:each="acc : ${accounts}">
+                <div class="account-card">
+                    <p th:text="${acc.accountNumber}">계좌번호</p>
+                    <h4 th:text="|₩${acc.balance}|">₩0</h4>
+                </div>
+            </div>
+        </section>
+
+        <section class="transactions-section">
+            <h3>최근 거래</h3>
+            <table class="transactions-table">
+                <thead>
+                    <tr><th>날짜</th><th>설명</th><th>유형</th><th>계좌</th><th>금액</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="tx : ${recentTransactions}">
+                        <td th:text="${#temporals.format(tx.date, 'yyyy/MM/dd')}"></td>
+                        <td th:text="${tx.description}"></td>
+                        <td th:text="${tx.type}"></td>
+                        <td th:text="${tx.accountNumber}"></td>
+                        <td th:text="|₩${tx.amount}|"
+                            th:classappend="${tx.amount < 0} ? 'negative' : 'positive'"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+</body>
+</html>

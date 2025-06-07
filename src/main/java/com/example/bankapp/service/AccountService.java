@@ -92,5 +92,8 @@ public class AccountService {
     public List<Transaction> getTransactions(String accountNumber) {
         return transactionRepository.findByAccountNumberOrderByDateDesc(accountNumber);
     }
-
+    
+    public List<Account> getAccounts(String ownerName) {
+        return accountRepository.findByOwnerName(ownerName);
+    }
 }

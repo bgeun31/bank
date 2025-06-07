@@ -1,14 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><title>회원가입</title></head>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; height: 100vh; background-color: #f7f7f7;
+        }
+        .container {
+            background: white; padding: 40px; border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 400px;
+        }
+        h2 {
+            text-align: center; margin-bottom: 30px;
+        }
+        input {
+            width: 100%; padding: 12px; margin-bottom: 15px;
+            border: 1px solid #ccc; border-radius: 5px;
+        }
+        button {
+            width: 100%; padding: 12px; background-color: black;
+            color: white; border: none; border-radius: 5px;
+            font-size: 16px;
+        }
+        .back {
+            margin-top: 15px; text-align: center;
+        }
+        .back a {
+            color: #333; text-decoration: none;
+        }
+    </style>
+</head>
 <body>
-<h2>회원가입</h2>
-<form th:action="@{/register}" method="post">
-    <input type="text" name="username" placeholder="ID" required />
-    <input type="password" name="password" placeholder="Password" required />
-    <input type="text" name="name" placeholder="이름" required />
-    <button type="submit">가입</button>
-</form>
-<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+<div class="container">
+    <h2>회원가입</h2>
+    <form th:action="@{/register}" method="post">
+        <input type="text" name="username" placeholder="아이디" required />
+        <input type="password" name="password" placeholder="비밀번호" required />
+        <input type="text" name="name" placeholder="이름" required />
+        <button type="submit">가입하기</button>
+    </form>
+    <div class="back">
+        <a th:href="@{/login}">이미 계정이 있으신가요? 로그인</a>
+    </div>
+</div>
+
 </body>
 </html>

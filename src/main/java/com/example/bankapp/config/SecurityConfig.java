@@ -22,10 +22,9 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error")
-                .permitAll()
+            	    .loginPage("/login")
+            	    .defaultSuccessUrl("/dashboard", true)  // 로그인 성공 시 대시보드로 이동
+            	    .permitAll()
             )
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")
