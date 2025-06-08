@@ -4,6 +4,9 @@ import com.example.bankapp.entity.Account;
 import com.example.bankapp.entity.Transaction;
 import com.example.bankapp.repository.AccountRepository;
 import com.example.bankapp.repository.TransactionRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,6 +133,7 @@ public class AccountService {
                 .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
     }
     
+    @Transactional
     public void deleteAccount(String accountNumber, String username) {
         Account acc = accountRepository.findByAccountNumber(accountNumber)
                         .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
