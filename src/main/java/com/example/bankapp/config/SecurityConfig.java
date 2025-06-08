@@ -22,12 +22,12 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-            	    .loginPage("/login")
-            	    .defaultSuccessUrl("/dashboard", true)  // 로그인 성공 시 대시보드로 이동
-            	    .permitAll()
+                .loginPage("/login")
+                .defaultSuccessUrl("/dashboard", true)
+                .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/")   // ✅ 로그아웃 후 index.html로 이동
                 .permitAll()
             )
             .userDetailsService(userDetailsService);

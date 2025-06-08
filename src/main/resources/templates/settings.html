@@ -64,8 +64,8 @@
                 <button type="submit">비밀번호 변경</button>
             </form>
 
-            <form method="post" action="/logout" style="margin-top: 20px;">
-                <button type="submit" style="background:#f44336;">로그아웃</button>
+            <form method="post" th:action="@{/logout}" style="margin-top: 20px;">
+                <button type="submit" class="btn btn-danger" style="background:#f44336;">로그아웃</button>
             </form>
         </div>
     </main>
