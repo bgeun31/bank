@@ -82,7 +82,15 @@
             <div class="card">
                 <div class="card-title">계좌 정보</div>
                 <p><strong>계좌 이름:</strong> <span th:text="${account.accountName}">급여 계좌</span></p>
-                <p><strong>계좌 유형:</strong> <span th:text="${account.accountType}">입출금</span></p>
+                <p>
+				  <strong>계좌 유형:</strong>
+				  <span th:switch="${account.accountType}">
+				      <span th:case="'checking'">입출금</span>
+				      <span th:case="'saving'">저축</span>
+				      <span th:case="'loan'">대출</span>
+				      <span th:case="*">기타</span>
+				  </span>
+				</p>
                 <p>
 				    <strong>현재 잔액:</strong>
 				    <span th:text="${'₩ ' + T(java.lang.String).format('%,d', T(java.lang.Math).round(account.balance))}">
