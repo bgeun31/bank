@@ -43,19 +43,31 @@
         </div>
 
         <div class="card-grid">
-            <div class="card">
-                <div class="card-title">내 계좌</div>
-                <p th:each="acc : ${accounts}">
-                    <span th:text="${acc.accountName}">주계좌</span><br/>
-					<span th:text="${acc.accountNumber}">123-456-789012</span><br/>
-                    <!-- 계좌별 잔액 -->
-					<span th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(acc.balance))}">
-					    ₩1,500,000
-					</span><br/><br/>
-                </p>
-                <button onclick="location.href='/create-account'">새 계좌 개설</button>
-            </div>
-
+            <div class="card account-list">
+		    <div class="card-title">내 계좌</div>
+		
+		    <!-- 계좌 반복 -->
+		    <ul class="accounts" th:each="acc : ${accounts}">
+		        <li class="account-item">
+		            <!-- 왼쪽 : 이름 + 번호 -->
+		            <div class="acc-label">
+		                <span class="acc-name"     th:text="${acc.accountName}">주계좌</span>
+		                <span class="acc-number"   th:text="${acc.accountNumber}">774-474-598</span>
+		            </div>
+		
+		            <!-- 오른쪽 : 잔액 -->
+		            <div class="acc-balance"
+		                 th:text="${'₩' + T(java.lang.String)
+		                                   .format('%,d', T(java.lang.Math).round(acc.balance))}">
+		                ₩5,000
+		            </div>
+		        </li>
+		    </ul>
+		
+		    <button class="btn-primary" onclick="location.href='/create-account'">
+		        새 계좌 개설
+		    </button>
+		</div>
             <div class="card quick-menu">
                 <div class="card-title">빠른 메뉴</div>
                 <button onclick="location.href='/deposit'">입금</button>
