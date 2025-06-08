@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import com.example.bankapp.entity.Account;
@@ -20,23 +21,36 @@ public class MainController {
     private AccountService accountService;
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model, Principal principal) {
+    public String showDashboard(Model model, Principal principal) {
         String username = principal.getName();
-        model.addAttribute("username", username);
 
-        List<Account> accounts = accountService.getAccounts(username); // 사용자 계좌
-        List<Transaction> transactions = accounts.stream()
-            .flatMap(acc -> accountService.getTransactions(acc.getAccountNumber()).stream())
-            .sorted(Comparator.comparing(Transaction::getDate).reversed())
-            .limit(3)
-            .toList();
-
-        double total = accounts.stream().mapToDouble(Account::getBalance).sum();
-
+        // 사용자 계좌 목록
+        List<Account> accounts = accountService.getAccountsByUsername(username);
         model.addAttribute("accounts", accounts);
-        model.addAttribute("totalBalance", total);
+
+        // 총 자산 계산
+        double totalBalance = accounts.stream()
+                .mapToDouble(Account::getBalance)
+                .sum();
+        model.addAttribute("totalBalance", totalBalance);   // 숫자로 전달
+
+        // 계좌 수
         model.addAttribute("accountCount", accounts.size());
-        model.addAttribute("recentTransactions", transactions);
+
+        // 최근 거래 내역
+        List<Transaction> recentTransactions = new ArrayList<>();
+        for (Account acc : accounts) {
+            List<Transaction> tx = accountService.getTransactions(acc.getAccountNumber());
+            recentTransactions.addAll(tx);
+        }
+
+        // 최근 거래 5개만 출력
+        recentTransactions.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+        List<Transaction> last5 = recentTransactions.stream().limit(5).toList();
+
+        model.addAttribute("recentTransactionCount", recentTransactions.size());
+        model.addAttribute("recentTransactions", last5);
+
         return "dashboard";
     }
 }

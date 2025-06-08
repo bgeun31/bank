@@ -7,6 +7,7 @@
 </head>
 <body>
 <div class="container">
+    <!-- 사이드바 -->
     <aside class="sidebar">
         <h2>🔒 안전한 은행</h2>
         <a href="/dashboard" class="active">📊 대시보드</a>
@@ -18,6 +19,7 @@
         <a href="/settings">⚙️ 설정</a>
     </aside>
 
+    <!-- 메인 -->
     <main class="main">
         <div class="section-title">대시보드</div>
         <p>계좌 정보와 최근 거래 내역을 확인하세요.</p>
@@ -25,7 +27,10 @@
         <div class="card-grid">
             <div class="card">
                 <div class="card-title">총 자산</div>
-                <div th:text="'₩' + ${totalBalance}">₩6,500,000</div>
+				<!-- 총 자산 -->
+				<div th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(totalBalance))}">
+				    ₩6,500,000
+				</div>
             </div>
             <div class="card">
                 <div class="card-title">계좌 수</div>
@@ -41,11 +46,14 @@
             <div class="card">
                 <div class="card-title">내 계좌</div>
                 <p th:each="acc : ${accounts}">
-                    <span th:text="${acc.name}">주계좌</span><br/>
-                    <span th:text="${acc.number}">123-456-789012</span><br/>
-                    <span th:text="'₩' + ${acc.balance}">₩1,500,000</span><br/><br/>
+                    <span th:text="${acc.accountName}">주계좌</span><br/>
+					<span th:text="${acc.accountNumber}">123-456-789012</span><br/>
+                    <!-- 계좌별 잔액 -->
+					<span th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(acc.balance))}">
+					    ₩1,500,000
+					</span><br/><br/>
                 </p>
-                <button>새 계좌 개설</button>
+                <button onclick="location.href='/create-account'">새 계좌 개설</button>
             </div>
 
             <div class="card quick-menu">
@@ -61,22 +69,28 @@
             <div class="card-title">최근 거래</div>
             <table class="table">
                 <thead>
-                    <tr>
-                        <th>날짜</th>
-                        <th>설명</th>
-                        <th>유형</th>
-                        <th>계좌</th>
-                        <th>금액</th>
-                    </tr>
+                <tr>
+                    <th>날짜</th>
+                    <th>설명</th>
+                    <th>유형</th>
+                    <th>계좌</th>
+                    <th>금액</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="tx : ${recentTransactions}">
-                        <td th:text="${tx.date}">6/7/2025</td>
-                        <td th:text="${tx.description}">적금 이체</td>
-                        <td th:text="${tx.type}">이체</td>
-                        <td th:text="${tx.accountNumber}">123-456-789013</td>
-                        <td th:text="${tx.amount}">-₩200,000</td>
-                    </tr>
+                <tr th:each="tx : ${recentTransactions}">
+                    <td th:text="${#temporals.format(tx.date, 'yyyy-MM-dd HH:mm')}">2025-06-08</td>
+                    <td th:text="${tx.description}">적금 이체</td>
+                    <td th:text="${tx.type}">이체</td>
+                    <td th:text="${tx.accountNumber}">123-456-789012</td>
+                    <td class="amount"
+					    th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'"
+					    th:text="${tx.amount < 0
+					               ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
+					               : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}">
+					    +₩100,000
+					</td>
+                </tr>
                 </tbody>
             </table>
         </div>
