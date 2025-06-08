@@ -1,6 +1,8 @@
 package com.example.bankapp.controller;
 
 import com.example.bankapp.entity.Account;
+import com.example.bankapp.service.TransactionService;
+
 import java.util.ArrayList;
 
 import com.example.bankapp.service.AccountService;
@@ -16,6 +18,9 @@ import java.util.List;
 
 @Controller
 public class AccountController {
+	
+	@Autowired
+	private TransactionService transactionService;
 
     @Autowired
     private AccountService accountService;
@@ -23,13 +28,6 @@ public class AccountController {
     @GetMapping("/")
     public String home() {
         return "index";
-    }
-
-    @PostMapping("/deposit")
-    public String deposit(@RequestParam String accountNumber, @RequestParam double amount, Model model) {
-        Account account = accountService.deposit(accountNumber, amount);
-        model.addAttribute("account", account);
-        return "result";
     }
     
     @PostMapping("/withdraw")
@@ -111,6 +109,20 @@ public class AccountController {
         model.addAttribute("transactions", transactions);
         return "transactions";
     }
+    @PostMapping("/deposit")
+    public String handleDeposit(@RequestParam String accountNumber,
+                                @RequestParam double amount,
+                                @RequestParam(required = false) String description) {
+        transactionService.deposit(accountNumber, amount,
+            (description != null && !description.isBlank()) ? description : "입금");
+        return "redirect:/transactions";
+    }
 
-
+    @GetMapping("/deposit")
+    public String showDepositForm(Model model, Principal principal) {
+        String username = principal.getName();
+        List<Account> accounts = accountService.getAccountsByUsername(username);
+        model.addAttribute("accounts", accounts);
+        return "deposit";
+    }
 }

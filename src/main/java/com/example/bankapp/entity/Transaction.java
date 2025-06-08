@@ -10,13 +10,28 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 기존 필드
     private String accountNumber;
     private String type; // "DEPOSIT", "WITHDRAW", "TRANSFER"
     private double amount;
     private LocalDateTime date;
     private String description;
 
-    // Getters and setters
+    // 🔽 추가: 실제 계좌 객체와 연결
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
+
+    // 🔽 Getter / Setter 추가
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    // 나머지 Getter/Setter 생략...
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
