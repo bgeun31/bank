@@ -134,8 +134,8 @@
                     <td class="amount"
                         th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'"
                         th:text="${tx.amount < 0
-                                   ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
-                                   : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}">
+                                   ? '- ₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
+                                   : '+ ₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}">
                         +₩100,000
                     </td>
                 </tr>
