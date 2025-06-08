@@ -4,6 +4,50 @@
     <meta charset="UTF-8">
     <title>계좌 상세</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .badge-green { background-color: #4caf50; color: #fff; }
+        .badge-red { background-color: #f44336; color: #fff; }
+
+        .filter-buttons {
+            margin: 10px 0;
+        }
+        .filter-buttons button {
+            margin-right: 8px;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #eee;
+        }
+        .filter-buttons button.active {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .text-red { color: #f44336; }
+        .text-green { color: #4caf50; }
+
+        .delete-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .delete-btn button {
+            background: #e53935;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -20,15 +64,17 @@
     </aside>
 
     <!-- 본문 -->
-    <main class="main">
-        <div class="section-title">
-            계좌 상세
-            <form method="post" th:action="@{/account/delete}" style="float:right">
+    <main class="main" style="position: relative;">
+        <div class="section-title">계좌 상세</div>
+        <p class="text-sm text-gray-500" th:text="|계좌번호: ${account.accountNumber}|">계좌번호</p>
+
+        <!-- 삭제 버튼 -->
+        <div class="delete-btn">
+            <form th:action="@{/account/delete}" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?')">
                 <input type="hidden" name="accountNumber" th:value="${account.accountNumber}">
-                <button type="submit" class="btn-delete">🗑️ 삭제</button>
+                <button type="submit">계좌 삭제</button>
             </form>
         </div>
-        <p class="text-sm text-gray-500" th:text="|계좌번호: ${account.accountNumber}|">계좌번호</p>
 
         <!-- 계좌 정보 / 계좌 관리 -->
         <div class="card-grid">
@@ -37,9 +83,12 @@
                 <div class="card-title">계좌 정보</div>
                 <p><strong>계좌 이름:</strong> <span th:text="${account.accountName}">급여 계좌</span></p>
                 <p><strong>계좌 유형:</strong> <span th:text="${account.accountType}">입출금</span></p>
-                <p><strong>현재 잔액:</strong> 
-                    <span th:text="${'₩' + #numbers.formatDecimal(account.balance, 0, 'COMMA', 0, 'POINT')}">₩0</span>
-                </p>
+                <p>
+				    <strong>현재 잔액:</strong>
+				    <span th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(account.balance))}">
+				        ₩0
+				    </span>
+				</p>
                 <p><strong>개설일:</strong> <span th:text="${#temporals.format(account.createdAt, 'yyyy-MM-dd')}">2025-06-08</span></p>
                 <p>
                     <strong>상태:</strong>
@@ -69,10 +118,10 @@
         <div class="card">
             <div class="card-title">거래 내역</div>
             <div class="filter-buttons">
-                <button>모든 거래</button>
-                <button>입금</button>
-                <button>출금</button>
-                <button>이체</button>
+                <button class="active" data-filter="ALL">모든 거래</button>
+                <button data-filter="DEPOSIT">입금</button>
+                <button data-filter="WITHDRAW">출금</button>
+                <button data-filter="TRANSFER">이체</button>
             </div>
             <table class="table">
                 <thead>
@@ -85,7 +134,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="tx : ${transactions}">
+                    <tr th:each="tx : ${transactions}" th:attr="data-type=${tx.type}">
                         <td th:text="${#temporals.format(tx.date, 'yyyy-MM-dd')}">2025-06-08</td>
                         <td th:text="${tx.description}">설명</td>
                         <td th:switch="${tx.type}">
@@ -95,9 +144,7 @@
                             <span th:case="*">기타</span>
                         </td>
                         <td th:text="${tx.accountNumber}">123-456-789012</td>
-                        <td th:text="${tx.amount < 0
-                                        ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
-                                        : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}"
+                        <td th:text="${tx.amount < 0 ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount)) : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}"
                             th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'">
                             +₩100000
                         </td>
@@ -107,5 +154,30 @@
         </div>
     </main>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.filter-buttons button');
+        const rows = document.querySelectorAll('tbody tr');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const filter = button.dataset.filter;
+
+                rows.forEach(row => {
+                    const type = row.dataset.type;
+                    if (filter === 'ALL' || type === filter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
 </body>
 </html>
