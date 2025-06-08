@@ -148,4 +148,16 @@ public class AccountService {
         // 🔥 계좌 삭제
         accountRepository.delete(acc);
     }
+    
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
+    }
+
+    @Transactional
+    public void toggleAccountStatus(Long id) {
+        Account acc = accountRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
+        acc.setActive(!acc.isActive());
+        accountRepository.save(acc);
+    }
 }

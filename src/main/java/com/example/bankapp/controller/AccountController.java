@@ -2,6 +2,7 @@ package com.example.bankapp.controller;
 
 import com.example.bankapp.entity.Account;
 import com.example.bankapp.service.TransactionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 
@@ -148,5 +149,20 @@ public class AccountController {
     public String deleteAccount(@RequestParam String accountNumber, Principal principal) {
         accountService.deleteAccount(accountNumber, principal.getName());
         return "redirect:/accounts";
+    }
+    
+    @GetMapping("/admin/accounts")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminAccounts(Model model) {
+        List<Account> accounts = accountService.getAllAccounts();
+        model.addAttribute("accounts", accounts);
+        return "admin-accounts";
+    }
+    
+    @PostMapping("/admin/accounts/toggle")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String toggleStatus(@RequestParam Long id) {
+        accountService.toggleAccountStatus(id);
+        return "redirect:/admin/accounts";
     }
 }

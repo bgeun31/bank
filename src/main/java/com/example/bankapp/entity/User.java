@@ -29,6 +29,10 @@ public class User {
         return username;
     }
 
+    public String getRole() {
+        return role;
+    }
+    
     public String getPassword() {
         return password;
     }
@@ -52,5 +56,8 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 }

@@ -3,6 +3,7 @@ package com.example.bankapp.config;
 import com.example.bankapp.service.CustomUserDetailsService;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,6 +12,7 @@ import org.springframework.security.web.*;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // ✅ @PreAuthorize 활성화
 public class SecurityConfig {
 
     @Bean
@@ -23,11 +25,11 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)
+                .defaultSuccessUrl("/dashboard", true) // 로그인 성공 시 대시보드로 이동
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/")   // ✅ 로그아웃 후 index.html로 이동
+                .logoutSuccessUrl("/") // 로그아웃 후 index.html로 이동
                 .permitAll()
             )
             .userDetailsService(userDetailsService);
