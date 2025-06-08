@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>계좌 이체</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+        <h2>🔒 안전한 은행</h2>
+        <a href="/dashboard">📊 대시보드</a>
+        <a href="/accounts">💳 계좌</a>
+        <a href="/transfer" class="active">🔁 이체</a>
+        <a href="/transactions">📉 거래 내역</a>
+        <a href="/deposit">📤 입금</a>
+        <a href="/withdraw">📥 출금</a>
+        <a href="/settings">⚙️ 설정</a>
+    </aside>
+
+    <!-- 본문 -->
+    <main class="main">
+        <h1 class="section-title">계좌 이체</h1>
+        <p class="text-sm text-gray-500">다른 계좌로 돈을 이체하세요.</p>
+
+        <div class="card" style="max-width: 600px;">
+            <h2 class="card-title">이체 정보</h2>
+            <p class="text-sm text-gray-500">이체할 계좌와 금액을 입력하세요.</p>
+
+            <form method="post" action="/transfer" class="space-y-4">
+                <label for="fromAccount">출금 계좌</label>
+                <select name="fromAccountNumber" id="fromAccount" class="input" required>
+                    <option value="">출금 계좌 선택</option>
+                    <option th:each="acc : ${accounts}"
+                            th:value="${acc.accountNumber}"
+                            th:text="${acc.accountName + ' (' + acc.accountNumber + ')'}">
+                        주계좌 (123-456-789012)
+                    </option>
+                </select>
+                <p class="text-sm text-gray-400">출금할 계좌를 선택하세요.</p>
+
+                <label for="toAccount">입금 계좌번호</label>
+                <input type="text" id="toAccount" name="toAccountNumber" class="input" placeholder="000-0000-000000" required>
+                <p class="text-sm text-gray-400">입금할 계좌번호를 입력하세요.</p>
+
+                <label for="amount">이체 금액</label>
+                <input type="number" id="amount" name="amount" class="input" placeholder="10000" required>
+
+                <label for="description">내용</label>
+                <textarea id="description" name="description" class="input" placeholder="이체 내용을 입력하세요."></textarea>
+
+                <button type="submit" class="input" style="background: black; color: white;">이체하기</button>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

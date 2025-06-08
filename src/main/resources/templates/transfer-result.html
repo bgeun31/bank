@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>이체 완료</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+        <h2>🔒 안전한 은행</h2>
+        <a href="/dashboard">📊 대시보드</a>
+        <a href="/accounts">💳 계좌</a>
+        <a href="/transfer">🔁 이체</a>
+        <a href="/transactions">📉 거래 내역</a>
+        <a href="/deposit">📤 입금</a>
+        <a href="/withdraw">📥 출금</a>
+        <a href="/settings">⚙️ 설정</a>
+    </aside>
+
+    <!-- 본문 -->
+    <main class="main">
+        <h1 class="section-title">이체 완료</h1>
+        <p class="text-gray-500">아래는 이체 완료된 계좌의 정보입니다.</p>
+
+        <div class="card" style="max-width: 500px;">
+            <h2 class="card-title">계좌 정보</h2>
+            <p><strong>계좌 이름:</strong> <span th:text="${account.accountName}">주계좌</span></p>
+            <p><strong>계좌 번호:</strong> <span th:text="${account.accountNumber}">123-456-789012</span></p>
+            <p><strong>잔액:</strong> <span th:text="'₩' + ${#numbers.formatDecimal(account.balance, 0, 0)}">₩0</span></p>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <a href="/accounts" class="input" style="background: black; color: white; text-align: center; display: inline-block; padding: 10px 20px; border-radius: 8px;">내 계좌 보기</a>
+        </div>
+    </main>
+</div>
+</body>
+</html>

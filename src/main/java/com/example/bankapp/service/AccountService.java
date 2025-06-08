@@ -66,7 +66,7 @@ public class AccountService {
         return updated;
     }
 
-    public Account transfer(String fromAccount, String toAccount, double amount) {
+    public Account transfer(String fromAccount, String toAccount, double amount, String description) {
         Account from = accountRepository.findByAccountNumber(fromAccount).orElseThrow();
         Account to = accountRepository.findByAccountNumber(toAccount).orElseThrow();
 
@@ -80,12 +80,15 @@ public class AccountService {
         accountRepository.save(from);
         accountRepository.save(to);
 
-        recordTransaction(fromAccount, "TRANSFER", -amount, toAccount + "로 이체");
-        recordTransaction(toAccount, "TRANSFER", amount, fromAccount + "로부터 이체");
+        // ✅ 사용자 입력한 description이 있으면 활용
+        String fromDesc = description != null && !description.isBlank() ? description : toAccount + "로 이체";
+        String toDesc = description != null && !description.isBlank() ? description : fromAccount + "로부터 이체";
 
-        return from; // 혹은 to; 필요에 따라 리턴값 조절
+        recordTransaction(fromAccount, "TRANSFER", -amount, fromDesc);
+        recordTransaction(toAccount, "TRANSFER", amount, toDesc);
+
+        return from;
     }
-
 
     private void recordTransaction(String accountNumber, String type, double amount, String description) {
         Transaction tx = new Transaction();
@@ -113,12 +116,13 @@ public class AccountService {
         Account acc = new Account();
         acc.setUsername(username);
         acc.setOwnerName(name);
-        acc.setType(type); // 필드 필요
+        acc.setAccountName(name); // ✅ 이 줄 반드시 필요
+        acc.setAccountType(type);
         acc.setAccountNumber(generateAccountNumber());
         acc.setBalance(amount);
-
         return accountRepository.save(acc);
     }
+
     public Account findByAccountNumber(String accountNumber) {
         return accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
