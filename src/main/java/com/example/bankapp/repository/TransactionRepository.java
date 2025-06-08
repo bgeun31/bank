@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findByAccountNumberOrderByDateDesc(String accountNumber);
+    void deleteByAccountNumber(String accountNumber); // 🔥 추가
 }

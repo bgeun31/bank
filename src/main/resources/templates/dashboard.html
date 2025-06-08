@@ -4,6 +4,34 @@
     <meta charset="UTF-8">
     <title>대시보드</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .type-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #fff;
+            font-weight: bold;
+        }
+        .badge-deposit {
+            background: #4caf50;
+        }
+        .badge-withdraw {
+            background: #f44336;
+        }
+        .badge-transfer {
+            background: #2196f3;
+        }
+        .amount {
+            font-weight: bold;
+        }
+        .text-red {
+            color: #f44336;
+        }
+        .text-green {
+            color: #4caf50;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -27,10 +55,9 @@
         <div class="card-grid">
             <div class="card">
                 <div class="card-title">총 자산</div>
-				<!-- 총 자산 -->
-				<div th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(totalBalance))}">
-				    ₩6,500,000
-				</div>
+                <div th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(totalBalance))}">
+                    ₩6,500,000
+                </div>
             </div>
             <div class="card">
                 <div class="card-title">계좌 수</div>
@@ -44,30 +71,24 @@
 
         <div class="card-grid">
             <div class="card account-list">
-		    <div class="card-title">내 계좌</div>
-		
-		    <!-- 계좌 반복 -->
-		    <ul class="accounts" th:each="acc : ${accounts}">
-		        <li class="account-item">
-		            <!-- 왼쪽 : 이름 + 번호 -->
-		            <div class="acc-label">
-		                <span class="acc-name"     th:text="${acc.accountName}">주계좌</span>
-		                <span class="acc-number"   th:text="${acc.accountNumber}">774-474-598</span>
-		            </div>
-		
-		            <!-- 오른쪽 : 잔액 -->
-		            <div class="acc-balance"
-		                 th:text="${'₩' + T(java.lang.String)
-		                                   .format('%,d', T(java.lang.Math).round(acc.balance))}">
-		                ₩5,000
-		            </div>
-		        </li>
-		    </ul>
-		
-		    <button class="btn-primary" onclick="location.href='/create-account'">
-		        새 계좌 개설
-		    </button>
-		</div>
+                <div class="card-title">내 계좌</div>
+                <ul class="accounts" th:each="acc : ${accounts}">
+                    <li class="account-item">
+                        <div class="acc-label">
+                            <span class="acc-name" th:text="${acc.accountName}">주계좌</span>
+                            <span class="acc-number" th:text="${acc.accountNumber}">774-474-598</span>
+                        </div>
+                        <div class="acc-balance"
+                             th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(acc.balance))}">
+                            ₩5,000
+                        </div>
+                    </li>
+                </ul>
+                <button class="btn-primary" onclick="location.href='/create-account'">
+                    새 계좌 개설
+                </button>
+            </div>
+
             <div class="card quick-menu">
                 <div class="card-title">빠른 메뉴</div>
                 <button onclick="location.href='/deposit'">입금</button>
@@ -93,15 +114,20 @@
                 <tr th:each="tx : ${recentTransactions}">
                     <td th:text="${#temporals.format(tx.date, 'yyyy-MM-dd HH:mm')}">2025-06-08</td>
                     <td th:text="${tx.description}">적금 이체</td>
-                    <td th:text="${tx.type}">이체</td>
+                    <td th:switch="${tx.type}">
+                        <span th:case="'DEPOSIT'" class="type-badge badge-deposit">입금</span>
+                        <span th:case="'WITHDRAW'" class="type-badge badge-withdraw">출금</span>
+                        <span th:case="'TRANSFER'" class="type-badge badge-transfer">이체</span>
+                        <span th:case="*">기타</span>
+                    </td>
                     <td th:text="${tx.accountNumber}">123-456-789012</td>
                     <td class="amount"
-					    th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'"
-					    th:text="${tx.amount < 0
-					               ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
-					               : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}">
-					    +₩100,000
-					</td>
+                        th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'"
+                        th:text="${tx.amount < 0
+                                   ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
+                                   : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}">
+                        +₩100,000
+                    </td>
                 </tr>
                 </tbody>
             </table>

@@ -143,4 +143,10 @@ public class AccountController {
         model.addAttribute("accounts", accounts);
         return "withdraw";
     }
+    
+    @PostMapping("/account/delete")
+    public String deleteAccount(@RequestParam String accountNumber, Principal principal) {
+        accountService.deleteAccount(accountNumber, principal.getName());
+        return "redirect:/accounts";
+    }
 }

@@ -21,7 +21,13 @@
 
     <!-- 본문 -->
     <main class="main">
-        <div class="section-title">계좌 상세</div>
+        <div class="section-title">
+            계좌 상세
+            <form method="post" th:action="@{/account/delete}" style="float:right">
+                <input type="hidden" name="accountNumber" th:value="${account.accountNumber}">
+                <button type="submit" class="btn-delete">🗑️ 삭제</button>
+            </form>
+        </div>
         <p class="text-sm text-gray-500" th:text="|계좌번호: ${account.accountNumber}|">계좌번호</p>
 
         <!-- 계좌 정보 / 계좌 관리 -->
@@ -31,7 +37,9 @@
                 <div class="card-title">계좌 정보</div>
                 <p><strong>계좌 이름:</strong> <span th:text="${account.accountName}">급여 계좌</span></p>
                 <p><strong>계좌 유형:</strong> <span th:text="${account.accountType}">입출금</span></p>
-                <p><strong>현재 잔액:</strong> <span th:text="'₩' + ${account.balance}">₩0</span></p>
+                <p><strong>현재 잔액:</strong> 
+                    <span th:text="${'₩' + #numbers.formatDecimal(account.balance, 0, 'COMMA', 0, 'POINT')}">₩0</span>
+                </p>
                 <p><strong>개설일:</strong> <span th:text="${#temporals.format(account.createdAt, 'yyyy-MM-dd')}">2025-06-08</span></p>
                 <p>
                     <strong>상태:</strong>
@@ -80,10 +88,19 @@
                     <tr th:each="tx : ${transactions}">
                         <td th:text="${#temporals.format(tx.date, 'yyyy-MM-dd')}">2025-06-08</td>
                         <td th:text="${tx.description}">설명</td>
-                        <td th:text="${tx.type}" th:classappend="${tx.type == '출금'} ? 'text-red' : 'text-green'">입금</td>
+                        <td th:switch="${tx.type}">
+                            <span th:case="'DEPOSIT'">입금</span>
+                            <span th:case="'WITHDRAW'">출금</span>
+                            <span th:case="'TRANSFER'">이체</span>
+                            <span th:case="*">기타</span>
+                        </td>
                         <td th:text="${tx.accountNumber}">123-456-789012</td>
-                        <td th:text="${tx.type == '출금'} ? '-₩' + #numbers.formatInteger(tx.amount) : '+₩' + #numbers.formatInteger(tx.amount)"
-                            th:classappend="${tx.type == '출금'} ? 'text-red' : 'text-green'">+₩100000</td>
+                        <td th:text="${tx.amount < 0
+                                        ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
+                                        : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}"
+                            th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'">
+                            +₩100000
+                        </td>
                     </tr>
                 </tbody>
             </table>

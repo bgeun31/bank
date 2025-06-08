@@ -129,4 +129,19 @@ public class AccountService {
         return accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
     }
+    
+    public void deleteAccount(String accountNumber, String username) {
+        Account acc = accountRepository.findByAccountNumber(accountNumber)
+                        .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
+        
+        if (!acc.getUsername().equals(username)) {
+            throw new SecurityException("계좌 소유자만 삭제할 수 있습니다.");
+        }
+
+        // 🔥 거래 내역 먼저 삭제
+        transactionRepository.deleteByAccountNumber(accountNumber);
+
+        // 🔥 계좌 삭제
+        accountRepository.delete(acc);
+    }
 }
