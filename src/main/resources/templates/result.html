@@ -1,11 +1,63 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><title>결과</title></head>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>처리 결과</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .result-card {
+            max-width: 600px;
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .input-button {
+            display: inline-block;
+            background: black;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 16px;
+        }
+    </style>
+</head>
 <body>
-    <h2>결과</h2>
-    <p th:text="'계좌주: ' + ${account.ownerName}"></p>
-    <p th:text="'계좌번호: ' + ${account.accountNumber}"></p>
-    <p th:text="'잔액: ' + ${account.balance} + ' 원'"></p>
-    <a href="/">돌아가기</a>
+<div class="container">
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+        <h2>🔒 안전한 은행</h2>
+        <a href="/dashboard">📊 대시보드</a>
+        <a href="/accounts">💳 계좌</a>
+        <a href="/transfer">🔁 이체</a>
+        <a href="/transactions">📉 거래 내역</a>
+        <a href="/deposit">📤 입금</a>
+        <a href="/withdraw">📥 출금</a>
+        <a href="/settings">⚙️ 설정</a>
+    </aside>
+
+    <!-- 메인 -->
+    <main class="main">
+        <h1 class="section-title">거래 완료</h1>
+        <div class="result-card">
+            <h2 th:text="'✅ 거래 완료되었습니다.'">✅ 거래 완료되었습니다.</h2>
+            <p><strong>계좌명:</strong> <span th:text="${account.accountName}">홍길동</span></p>
+            <p><strong>계좌번호:</strong> <span th:text="${account.accountNumber}">123-456-789</span></p>
+            <p>현재 잔액: 
+			  <span th:class="${account.balance >= 0} ? 'text-green' : 'text-red'"
+			        th:text="${account.balance >= 0
+			          ? '₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(account.balance))
+			          : '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-account.balance))}">
+			    ₩0
+			  </span>
+			</p>
+
+            <a href="/accounts" class="input-button">계좌 목록으로</a>
+            <a href="/transactions" class="input-button">거래 내역 보기</a>
+        </div>
+    </main>
+</div>
 </body>
 </html>

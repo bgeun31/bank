@@ -110,12 +110,17 @@ public class AccountController {
         return "transactions";
     }
     @PostMapping("/deposit")
-    public String handleDeposit(@RequestParam String accountNumber,
-                                @RequestParam double amount,
-                                @RequestParam(required = false) String description) {
-        transactionService.deposit(accountNumber, amount,
-            (description != null && !description.isBlank()) ? description : "입금");
-        return "redirect:/transactions";
+    public String deposit(@RequestParam String accountNumber,
+                          @RequestParam double amount,
+                          @RequestParam(required = false) String description,
+                          Model model) {
+
+        Account account = accountService.deposit(accountNumber, amount);
+
+        model.addAttribute("account", account); // 💰 입금 후 계좌 객체 전달
+        model.addAttribute("message", (description != null && !description.isBlank()) ? description : "입금 완료");
+
+        return "result"; // 👉 거래 내역이 아닌 결과 페이지로 이동
     }
 
     @GetMapping("/deposit")
@@ -125,4 +130,12 @@ public class AccountController {
         model.addAttribute("accounts", accounts);
         return "deposit";
     }
+    @GetMapping("/withdraw")
+    public String showWithdrawForm(Model model, Principal principal) {
+        String username = principal.getName();
+        List<Account> accounts = accountService.getAccountsByUsername(username);
+        model.addAttribute("accounts", accounts);
+        return "withdraw";
+    }
+
 }
