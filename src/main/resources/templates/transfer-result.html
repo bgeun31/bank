@@ -24,15 +24,25 @@
         <h1 class="section-title">이체 완료</h1>
         <p class="text-gray-500">아래는 이체 완료된 계좌의 정보입니다.</p>
 
-        <div class="card" style="max-width: 500px;">
-            <h2 class="card-title">계좌 정보</h2>
-            <p><strong>계좌 이름:</strong> <span th:text="${account.accountName}">주계좌</span></p>
-            <p><strong>계좌 번호:</strong> <span th:text="${account.accountNumber}">123-456-789012</span></p>
-            <p><strong>잔액:</strong> <span th:text="'₩' + ${#numbers.formatDecimal(account.balance, 0, 0)}">₩0</span></p>
-        </div>
+        <!-- 카드와 버튼을 동일한 폭으로 묶기 -->
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div class="card">
+                <h2 class="card-title">계좌 정보</h2>
+                <p><strong>계좌 이름:</strong> <span th:text="${account.accountName}">주계좌</span></p>
+                <p><strong>계좌 번호:</strong> <span th:text="${account.accountNumber}">123-456-789012</span></p>
+                <p><strong>잔액:</strong>
+                    <span th:text="'₩' + ${#numbers.formatDecimal(account.balance, 0, 0)}">₩0</span>
+                </p>
+            </div>
 
-        <div style="margin-top: 20px;">
-            <a href="/accounts" class="input" style="background: black; color: white; text-align: center; display: inline-block; padding: 10px 20px; border-radius: 8px;">내 계좌 보기</a>
+            <!-- 버튼도 동일 폭으로 설정 -->
+            <div style="margin-top: 20px;">
+                <a href="/accounts" style="display: block; width: 100%;">
+                    <button class="input" style="width: 100%; background: black; color: white; padding: 10px; border-radius: 8px;">
+                        내 계좌 보기
+                    </button>
+                </a>
+            </div>
         </div>
     </main>
 </div>
