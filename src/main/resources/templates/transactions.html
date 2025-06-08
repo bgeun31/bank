@@ -6,22 +6,76 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <style>
-        .filters{display:flex;gap:8px;margin-bottom:20px}
-        .filters button{padding:8px 14px;border:none;border-radius:6px;background:#eee;cursor:pointer}
-        .filters button.active{background:#000;color:#fff}
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
 
-        .transactions-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-        .transactions-table{width:100%;border-collapse:collapse;font-size:14px}
-        .transactions-table th,.transactions-table td{padding:12px;border-bottom:1px solid #eee;text-align:left}
+        .filters button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            background: #eee;
+            cursor: pointer;
+        }
 
-        .amount{font-weight:bold}
-        .text-red{color:#f44336}
-        .text-green{color:#4caf50}
+        .filters button.active {
+            background: #000;
+            color: #fff;
+        }
 
-        .type-badge{display:inline-block;padding:4px 8px;border-radius:12px;font-size:12px;color:#fff}
-        .badge-deposit{background:#4caf50}
-        .badge-withdraw{background:#f44336}
-        .badge-transfer{background:#2196f3}
+        .transactions-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+        }
+
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .transactions-table th,
+        .transactions-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        .amount {
+            font-weight: bold;
+        }
+
+        .text-red {
+            color: #f44336;
+        }
+
+        .text-green {
+            color: #4caf50;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .badge-deposit {
+            background: #4caf50;
+        }
+
+        .badge-withdraw {
+            background: #f44336;
+        }
+
+        .badge-transfer {
+            background: #2196f3;
+        }
     </style>
 </head>
 <body>
@@ -43,8 +97,8 @@
 
         <div class="filters">
             <button class="active" data-filter="ALL">전체</button>
-            <button data-filter="입금">입금</button>
-            <button data-filter="출금">출금</button>
+            <button data-filter="DEPOSIT">입금</button>
+            <button data-filter="WITHDRAW">출금</button>
             <button data-filter="TRANSFER">이체</button>
         </div>
 
@@ -63,22 +117,26 @@
                 <tbody>
                 <tr th:each="tx : ${transactions}" th:attr="data-type=${tx.type}">
                     <td th:text="${#temporals.format(tx.date, 'yyyy/MM/dd')}">2025/06/08</td>
-                    <td th:text="${tx.description}">설명</td>
                     <td>
-                        <span class="type-badge"
-                              th:classappend="${tx.type}=='입금' ? 'badge-deposit' :
-                                              (tx.type=='출금' ? 'badge-withdraw' : 'badge-transfer')"
-                              th:text="${tx.type}">입금</span>
+					    <span th:if="${tx.description != null and !tx.description.isEmpty()}"
+					          th:text="${tx.description}">설명</span>
+					    <span th:unless="${tx.description != null and !tx.description.isEmpty()}">설명 없음</span>
+					</td>
+
+                    <td th:switch="${tx.type}">
+                        <span th:case="'DEPOSIT'"  class="type-badge badge-deposit">입금</span>
+                        <span th:case="'WITHDRAW'" class="type-badge badge-withdraw">출금</span>
+                        <span th:case="'TRANSFER'" class="type-badge badge-transfer">이체</span>
+                        <span th:case="*">기타</span>
                     </td>
                     <td th:text="${tx.accountNumber}">계좌번호</td>
-                    <!-- 금액 (±부호, 색상, 콤마) -->
-					<td class="amount"
-					    th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'"
-					    th:text="${tx.amount < 0
-					               ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
-					               : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}">
-					    +₩100,000
-					</td>
+                    <td class="amount"
+                        th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'"
+                        th:text="${tx.amount < 0
+                                   ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
+                                   : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}">
+                        +₩100,000
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -87,29 +145,28 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const buttons = document.querySelectorAll('.filters button');
-    const rows = document.querySelectorAll('tbody tr');
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.filters button');
+        const rows = document.querySelectorAll('tbody tr');
 
-    buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            buttons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
 
-            const filter = btn.dataset.filter;
+                const filter = btn.dataset.filter;
 
-            rows.forEach(row => {
-                const type = row.dataset.type;
-                if (filter === 'ALL' || type === filter) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                rows.forEach(row => {
+                    const type = row.dataset.type;
+                    if (filter === 'ALL' || type === filter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
             });
         });
     });
-});
 </script>
-
 </body>
 </html>

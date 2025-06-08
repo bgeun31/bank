@@ -45,16 +45,17 @@ public class AccountService {
         return accountRepository.save(acc);
     }
 
-    public Account deposit(String accountNumber, double amount) {
+    public Account deposit(String accountNumber, double amount, String description) {
         Account acc = accountRepository.findByAccountNumber(accountNumber).orElseThrow();
         acc.setBalance(acc.getBalance() + amount);
         Account updated = accountRepository.save(acc);
 
-        recordTransaction(accountNumber, "DEPOSIT", amount, "입금 처리");
+        String desc = (description != null && !description.isBlank()) ? description : "입금 처리";
+        recordTransaction(accountNumber, "DEPOSIT", amount, desc);
         return updated;
     }
 
-    public Account withdraw(String accountNumber, double amount) {
+    public Account withdraw(String accountNumber, double amount, String description) {
         Account acc = accountRepository.findByAccountNumber(accountNumber).orElseThrow();
         if (acc.getBalance() < amount) {
             throw new IllegalArgumentException("잔액이 부족합니다.");
@@ -62,7 +63,8 @@ public class AccountService {
         acc.setBalance(acc.getBalance() - amount);
         Account updated = accountRepository.save(acc);
 
-        recordTransaction(accountNumber, "WITHDRAW", amount, "출금 처리");
+        String desc = (description != null && !description.isBlank()) ? description : "출금 처리";
+        recordTransaction(accountNumber, "WITHDRAW", amount, desc);
         return updated;
     }
 

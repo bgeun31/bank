@@ -31,9 +31,15 @@ public class AccountController {
     }
     
     @PostMapping("/withdraw")
-    public String withdraw(@RequestParam String accountNumber, @RequestParam double amount, Model model) {
-        Account account = accountService.withdraw(accountNumber, amount);
+    public String withdraw(@RequestParam String accountNumber,
+                           @RequestParam double amount,
+                           @RequestParam(required = false) String description,
+                           Model model) {
+
+        Account account = accountService.withdraw(accountNumber, amount, description); // ✅ 수정된 부분
         model.addAttribute("account", account);
+        model.addAttribute("message", (description != null && !description.isBlank()) ? description : "출금 완료");
+
         return "result";
     }
     
@@ -115,12 +121,12 @@ public class AccountController {
                           @RequestParam(required = false) String description,
                           Model model) {
 
-        Account account = accountService.deposit(accountNumber, amount);
+        Account account = accountService.deposit(accountNumber, amount, description); // ✅ 수정된 부분
 
-        model.addAttribute("account", account); // 💰 입금 후 계좌 객체 전달
+        model.addAttribute("account", account);
         model.addAttribute("message", (description != null && !description.isBlank()) ? description : "입금 완료");
 
-        return "result"; // 👉 거래 내역이 아닌 결과 페이지로 이동
+        return "result";
     }
 
     @GetMapping("/deposit")
