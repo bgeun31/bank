@@ -31,6 +31,10 @@
         .text-green {
             color: #4caf50;
         }
+        .text-center {
+            text-align: center;
+            color: #777;
+        }
     </style>
 </head>
 <body>
@@ -49,44 +53,45 @@
 
     <!-- 메인 -->
     <main class="main">
-        <div class="section-title">대시보드</div>
+        <div class="section-title"><strong>대시보드</strong></div>
         <p>계좌 정보와 최근 거래 내역을 확인하세요.</p>
 
         <div class="card-grid">
             <div class="card">
                 <div class="card-title">총 자산</div>
-                <div th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(totalBalance))}">
-                    ₩6,500,000
+                <div th:text="${'₩ ' + T(java.lang.String).format('%,d', T(java.lang.Math).round(totalBalance))}">
+                    ₩0
                 </div>
             </div>
             <div class="card">
                 <div class="card-title">계좌 수</div>
-                <div th:text="${accountCount}">2</div>
+                <div th:text="${accountCount}">0</div>
             </div>
             <div class="card">
                 <div class="card-title">최근 거래</div>
-                <div th:text="${recentTransactionCount}">3</div>
+                <div th:text="${recentTransactionCount}">0</div>
             </div>
         </div>
 
         <div class="card-grid">
             <div class="card account-list">
                 <div class="card-title">내 계좌</div>
-                <ul class="accounts" th:each="acc : ${accounts}">
+
+                <ul class="accounts" th:if="${#lists.isEmpty(accounts)}">
+				    <li class="centered-message">계좌가 없습니다. 새 계좌를 개설해보세요.</li>
+				</ul>
+                <ul class="accounts" th:each="acc : ${accounts}" th:unless="${#lists.isEmpty(accounts)}">
                     <li class="account-item">
                         <div class="acc-label">
                             <span class="acc-name" th:text="${acc.accountName}">주계좌</span>
                             <span class="acc-number" th:text="${acc.accountNumber}">774-474-598</span>
                         </div>
                         <div class="acc-balance"
-                             th:text="${'₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(acc.balance))}">
+                             th:text="${'₩ ' + T(java.lang.String).format('%,d', T(java.lang.Math).round(acc.balance))}">
                             ₩5,000
                         </div>
                     </li>
                 </ul>
-                <button class="btn-primary" onclick="location.href='/create-account'">
-                    새 계좌 개설
-                </button>
             </div>
 
             <div class="card quick-menu">
@@ -110,8 +115,13 @@
                     <th>금액</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="tx : ${recentTransactions}">
+                <tbody th:if="${#lists.isEmpty(recentTransactions)}">
+                <tr>
+                    <td colspan="5" class="text-center">표시할 거래 내역이 없습니다.</td>
+                </tr>
+                </tbody>
+                <tbody th:each="tx : ${recentTransactions}" th:unless="${#lists.isEmpty(recentTransactions)}">
+                <tr>
                     <td th:text="${#temporals.format(tx.date, 'yyyy-MM-dd HH:mm')}">2025-06-08</td>
                     <td th:text="${tx.description}">적금 이체</td>
                     <td th:switch="${tx.type}">

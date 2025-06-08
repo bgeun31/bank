@@ -100,7 +100,7 @@
       <div class="account-card" th:each="acc : ${accounts}">
         <h3 th:text="${acc.accountName}">계좌명</h3>
         <p th:text="'계좌번호: ' + ${acc.accountNumber}">123-456-789012</p>
-        <p class="balance" th:text="'₩' + ${acc.balance}">₩1,500,000</p>
+        <p class="balance" th:text="'₩ ' + ${acc.balance}">₩1,500,000</p>
         <p th:text="'개설일: ' + ${#temporals.format(acc.createdAt, 'yyyy-MM-dd')}">2025-06-07</p>
 
         <!-- 안전한 onclick 처리 -->

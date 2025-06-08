@@ -201,3 +201,11 @@ body {
     font-weight:700;
     white-space:nowrap;           /* 줄바꿈 방지 */
 }
+.centered-message {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 120px; /* 높이는 필요에 따라 조절 */
+        color: #777;
+        font-size: 15px;
+    }
