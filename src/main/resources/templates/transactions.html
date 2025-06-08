@@ -4,85 +4,29 @@
     <meta charset="UTF-8">
     <title>거래 내역</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+
     <style>
-        .filters {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+        .filters{display:flex;gap:8px;margin-bottom:20px}
+        .filters button{padding:8px 14px;border:none;border-radius:6px;background:#eee;cursor:pointer}
+        .filters button.active{background:#000;color:#fff}
 
-        .filters button {
-            padding: 8px 14px;
-            border: none;
-            border-radius: 6px;
-            background: #eee;
-            cursor: pointer;
-        }
+        .transactions-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+        .transactions-table{width:100%;border-collapse:collapse;font-size:14px}
+        .transactions-table th,.transactions-table td{padding:12px;border-bottom:1px solid #eee;text-align:left}
 
-        .filters button.active {
-            background: black;
-            color: white;
-        }
+        .amount{font-weight:bold}
+        .text-red{color:#f44336}
+        .text-green{color:#4caf50}
 
-        .transactions-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .transactions-card h2 {
-            margin-bottom: 12px;
-        }
-
-        .transactions-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        .transactions-table th,
-        .transactions-table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-        }
-
-        .transactions-table td.amount {
-            font-weight: bold;
-        }
-
-        .text-red {
-            color: red;
-        }
-
-        .text-green {
-            color: green;
-        }
-
-        .type-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            color: white;
-        }
-
-        .badge-deposit {
-            background: #4caf50;
-        }
-
-        .badge-withdraw {
-            background: #f44336;
-        }
-
-        .badge-transfer {
-            background: #2196f3;
-        }
+        .type-badge{display:inline-block;padding:4px 8px;border-radius:12px;font-size:12px;color:#fff}
+        .badge-deposit{background:#4caf50}
+        .badge-withdraw{background:#f44336}
+        .badge-transfer{background:#2196f3}
     </style>
 </head>
 <body>
 <div class="container">
+    <!-- 사이드바 -->
     <aside class="sidebar">
         <h2>🔒 안전한 은행</h2>
         <a href="/dashboard">📊 대시보드</a>
@@ -94,6 +38,7 @@
         <a href="/settings">⚙️ 설정</a>
     </aside>
 
+    <!-- 메인 -->
     <main class="main">
         <h1 class="section-title">거래 내역</h1>
         <p>모든 계좌의 거래 내역을 확인하세요.</p>
@@ -121,20 +66,25 @@
                 <tr th:each="tx : ${transactions}">
                     <td th:text="${#temporals.format(tx.date, 'yyyy/MM/dd')}">2025/06/08</td>
                     <td th:text="${tx.description}">설명</td>
+
+                    <!-- 유형 배지 -->
                     <td>
                         <span class="type-badge"
-                              th:classappend="${tx.type} == '입금' ? 'badge-deposit' :
-                                              (tx.type == '출금' ? 'badge-withdraw' : 'badge-transfer')"
+                              th:classappend="${tx.type}=='입금' ? 'badge-deposit' :
+                                              (tx.type=='출금' ? 'badge-withdraw' : 'badge-transfer')"
                               th:text="${tx.type}">입금</span>
                     </td>
+
                     <td th:text="${tx.accountNumber}">계좌번호</td>
-                    <td class="amount"
-					    th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'">
-					    <span th:text="${tx.amount < 0} ? '-₩' : '+₩'">₩</span>
-					    <span th:text="${#numbers.formatDecimal(T(java.lang.Math).abs(tx.amount), 0, 0)}">1000</span>
+
+                    <!-- 금액 (콤마, ±부호, 색상) -->
+					<td class="amount"
+					    th:classappend="${tx.amount < 0} ? 'text-red' : 'text-green'"
+					    th:text="${tx.amount < 0
+					               ? '-₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(-tx.amount))
+					               : '+₩' + T(java.lang.String).format('%,d', T(java.lang.Math).round(tx.amount))}">
+					    +₩100,000
 					</td>
-
-
                 </tr>
                 </tbody>
             </table>
