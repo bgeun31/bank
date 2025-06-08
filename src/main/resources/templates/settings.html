@@ -43,20 +43,20 @@
 <div class="container">
     <aside class="sidebar">
         <h2>🔒 안전한 은행</h2>
-        <a href="/dashboard">📊 대시보드</a>
-        <a href="/accounts">💳 계좌</a>
-        <a href="/transfer">🔁 이체</a>
-        <a href="/transactions">📉 거래 내역</a>
-        <a href="/deposit">📤 입금</a>
-        <a href="/withdraw">📥 출금</a>
-        <a href="/settings" class="active">⚙️ 설정</a>
+        <a href="/sskm0116/dashboard">📊 대시보드</a>
+        <a href="/sskm0116/accounts">💳 계좌</a>
+        <a href="/sskm0116/transfer">🔁 이체</a>
+        <a href="/sskm0116/transactions">📉 거래 내역</a>
+        <a href="/sskm0116/deposit">📤 입금</a>
+        <a href="/sskm0116/withdraw">📥 출금</a>
+        <a href="/sskm0116/settings" class="active">⚙️ 설정</a>
     </aside>
 
     <main class="main">
         <div class="settings-card">
             <h2>사용자 설정</h2>
 
-            <form method="post" action="/settings/update-password">
+            <form method="post" action="/sskm0116/settings/update-password">
                 <label for="username">사용자 이름</label>
                 <input type="text" id="username" name="username" th:value="${username}" readonly>
 
@@ -69,11 +69,11 @@
             <!-- 관리자 전용 섹션 -->
             <div class="admin-section" sec:authorize="hasRole('ADMIN')">
                 <h3 style="margin-top: 30px;">🔐 관리자 기능</h3>
-                <a href="/admin/accounts"><button class="btn" style="margin-top: 10px;">계좌 관리</button></a>
+                <a href="/sskm0116/admin/accounts"><button class="btn" style="margin-top: 10px;">계좌 관리</button></a>
             </div>
 
             <!-- 로그아웃 -->
-            <form method="post" action="/logout" style="margin-top: 20px;">
+            <form method="post" action="/sskm0116/logout" style="margin-top: 20px;">
                 <button type="submit" class="btn btn-danger" style="background:#f44336;">로그아웃</button>
             </form>
         </div>

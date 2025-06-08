@@ -66,11 +66,11 @@
 <div class="container">
     <aside class="sidebar">
         <h2>🔒 안전한 은행</h2>
-        <a href="/dashboard">📊 대시보드</a>
-        <a href="/accounts">💳 계좌</a>
-        <a href="/transfer">🔁 이체</a>
-        <a href="/transactions">📉 거래 내역</a>
-        <a href="/settings">⚙️ 설정</a>
+        <a href="/sskm0116/dashboard">📊 대시보드</a>
+        <a href="/sskm0116/accounts">💳 계좌</a>
+        <a href="/sskm0116/transfer">🔁 이체</a>
+        <a href="/sskm0116/transactions">📉 거래 내역</a>
+        <a href="/sskm0116/settings">⚙️ 설정</a>
     </aside>
 
     <main class="main">
@@ -98,7 +98,7 @@
                         <span th:unless="${acc.active}" class="badge badge-red">비활성</span>
                     </td>
                     <td>
-                        <form method="post" action="/admin/accounts/toggle">
+                        <form method="post" action="/sskm0116/admin/accounts/toggle">
                             <input type="hidden" name="id" th:value="${acc.id}">
                             <button type="submit" class="btn-toggle">변경</button>
                         </form>

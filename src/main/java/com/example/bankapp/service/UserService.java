@@ -21,6 +21,8 @@ public class UserService {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setName(name);
+        user.setRole("USER"); // ✅ ROLE_USER 자동 부여됨
+
         return userRepository.save(user);
     }
 
